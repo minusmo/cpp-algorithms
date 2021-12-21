@@ -21,6 +21,7 @@ void findPrime(int nums[], int length) {
     }
     printf("%d\n", primes);
 }
+
 int main() {
     int N;
     int *nums;
