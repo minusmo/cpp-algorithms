@@ -3,25 +3,24 @@
 #include <array>
 #define MAXSIZE 100001
 using namespace std;
+
 struct Item
 {
     int n;
     int g;
-    int estimation;
 
     bool operator< (const Item & item)const {
-        if (estimation == item.estimation) {
+        if (g == item.g) {
             return g > item.g;
         }
         else {
-            return estimation > item.estimation;
+            return n > item.n;
         }
     }
 };
 
 int calculateMinTime(const int N, const int K);
-int estimateMinTime(const int n, const int g, const int K);
-struct Item makeItem(int n, int g, int estimation);
+struct Item makeItem(int n, int g);
 
 int main() {
     int N, K;
@@ -34,73 +33,36 @@ int main() {
 
 int calculateMinTime(const int N, const int K) {
     array<int, MAXSIZE*2> costs;
-    array<int, MAXSIZE*2> calculated;
     costs.fill(MAXSIZE);
-    calculated.fill(false);
     if (N > K) {
         return N - K;
     }
-    int minTime = MAXSIZE;
-    int currentNumber;
-    queue<int> q;
-    q.push(N);
+    struct Item currentNumber;
+    priority_queue<struct Item> q;
+    Item initialItem = {N,0};
+    q.push(initialItem);
     costs[N] = 0;
-    calculated[N] = true;
     while (q.empty() == false) {
-        currentNumber = q.front();
+        currentNumber = q.top();
         q.pop();
-        if (currentNumber == K) {
-            if (costs[currentNumber] < minTime) {
-                minTime = costs[currentNumber];
-                break;
-            }
+        
+        if (currentNumber.n <= K && costs[currentNumber.n+1] > currentNumber.g+1) {
+            costs[currentNumber.n+1] = currentNumber.g + 1;
+            q.push(makeItem(currentNumber.n+1, currentNumber.g+1));
         }
-        else {
-            if (calculated[currentNumber + 1] == false && currentNumber <= K) {
-                costs[currentNumber+1] = costs[currentNumber] + 1;
-                calculated[currentNumber+1] = true;
-                q.push(currentNumber+1);
-            }
-            if (calculated[currentNumber - 1] == false && currentNumber >= 1) {
-                costs[currentNumber-1] = costs[currentNumber] + 1;
-                calculated[currentNumber-1] = true;
-                q.push(currentNumber -1);
-            }
-            if (calculated[currentNumber * 2] == false && currentNumber*2 <= 100000 && currentNumber > 0) {
-                costs[currentNumber*2] = costs[currentNumber];
-                calculated[currentNumber*2] = true;
-                q.push(currentNumber*2);
-            }
+        if (currentNumber.n >= 1 && costs[currentNumber.n-1] > currentNumber.g+1) {
+            costs[currentNumber.n-1] = currentNumber.g + 1;
+            q.push(makeItem(currentNumber.n-1, currentNumber.g+1));
+        }
+        if (currentNumber.n *2 <= 100000 && currentNumber.n > 0 && costs[currentNumber.n*2] > currentNumber.g) {
+            costs[currentNumber.n*2] = currentNumber.g;
+            q.push(makeItem(currentNumber.n*2,currentNumber.g));
         }
     }
-    return minTime;
+    return costs[K];
 }
 
-struct Item makeItem(int n, int g, int estimation) {
-    struct Item item = {n,g,estimation};
+struct Item makeItem(int n, int g) {
+    struct Item item = {n,g};
     return item;
-}
-
-int estimateMinTime(const int n, const int g, const int K) {
-    int estimation = g;
-    int h = 0;
-    int N = n;
-    int doubles = 0;
-    
-    if (n > K) {
-        h += n - K;
-    }
-    else if (n == 0) {
-        h = K - n;
-    }
-    else {
-        while (N < K)
-        {
-            N = N * 2;
-            doubles += 1;
-        }
-        h += doubles;
-    }
-    estimation += h;
-    return estimation;
 }

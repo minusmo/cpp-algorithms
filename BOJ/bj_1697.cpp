@@ -3,25 +3,8 @@
 #include <array>
 #define MAXSIZE 100001
 using namespace std;
-struct Item
-{
-    int n;
-    int g;
-    int estimation;
-
-    bool operator< (const Item & item)const {
-        if (estimation == item.estimation) {
-            return g > item.g;
-        }
-        else {
-            return estimation > item.estimation;
-        }
-    }
-};
 
 int calculateMinTime(const int N, const int K);
-int estimateMinTime(const int n, const int g, const int K);
-struct Item makeItem(int n, int g, int estimation);
 
 int main() {
     int N, K;
@@ -74,33 +57,4 @@ int calculateMinTime(const int N, const int K) {
         }
     }
     return minTime;
-}
-
-struct Item makeItem(int n, int g, int estimation) {
-    struct Item item = {n,g,estimation};
-    return item;
-}
-
-int estimateMinTime(const int n, const int g, const int K) {
-    int estimation = g;
-    int h = 0;
-    int N = n;
-    int doubles = 0;
-    
-    if (n > K) {
-        h += n - K;
-    }
-    else if (n == 0) {
-        h = K - n;
-    }
-    else {
-        while (N < K)
-        {
-            N = N * 2;
-            doubles += 1;
-        }
-        h += doubles;
-    }
-    estimation += h;
-    return estimation;
 }
