@@ -18,8 +18,8 @@ int main() {
 
 int calculateLCS(string sequence1, string sequence2) {
     int LCS[MAXSIZE][MAXSIZE];
+    bool isSubseq = false;
     for (int i=0;i<sequence1.length();i++) {
-        bool isSubseq = false;
         if (isSubseq) {
             LCS[i][0] = 1;
             continue;
@@ -29,8 +29,8 @@ int calculateLCS(string sequence1, string sequence2) {
             isSubseq = true;
         }
     }
+    isSubseq = false;
     for (int j=0;j<sequence2.length();j++) {
-        bool isSubseq = false;
         if (isSubseq) {
             LCS[0][j] = 1;
             continue;
