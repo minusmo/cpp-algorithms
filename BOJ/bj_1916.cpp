@@ -10,24 +10,33 @@ using namespace std;
 void getMinCost(const int start, const int end, vector<pair<int,int> > adjacencyList[MAXSIZE+1], int costs[MAXSIZE+1]);
 int main() {
     int N, M;
-    scanf("%d", &N);
-    scanf("%d", &M);
     vector<pair<int,int> > adjacencyList[MAXSIZE+1];
     int start, end;
     int source, destination, cost;
+    int costs[MAXSIZE+1];
+    scanf("%d", &N);
+    scanf("%d", &M);
     for (int i=1;i<N+1;i++) {
         vector<pair<int, int> > newVector;
         adjacencyList[i] = newVector;
+        costs[i] = MAXSIZE * MAXCOST;
     }
     for (int i=1; i<M+1;i++) {
-        cin >> source >> destination >> cost;
-        adjacencyList[source].push_back({cost, destination});
+        bool inserted = false;
+        scanf("%d %d %d", &source, &destination, &cost);
+        for (auto adjacencyVertex = adjacencyList[source].begin(); adjacencyVertex != adjacencyList[source].end(); adjacencyVertex++) {
+            if ((*adjacencyVertex).second == destination && (*adjacencyVertex).first > cost) {
+                (*adjacencyVertex).first = cost;
+                inserted = true;
+                break;
+            }
+        }
+        if (inserted == false){
+            adjacencyList[source].push_back({cost, destination});
+        }
     }
-    cin >> start >> end;
-    int costs[MAXSIZE+1];
-    for (int j=1;j<N+1;j++) {
-        costs[j] = MAXSIZE * MAXCOST;
-    }
+    scanf("%d %d", &start, &end);
+
     getMinCost(start, end, adjacencyList, costs);
     cout << costs[end] << endl;
     return 0;
@@ -51,5 +60,4 @@ void getMinCost(const int start, const int end, vector<pair<int,int> > adjacency
             }
         }
     }
-    
 }
