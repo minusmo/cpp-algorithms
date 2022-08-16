@@ -1,34 +1,29 @@
 #include <stdio.h>
 #include <iostream>
-#define MAXSIZE 100
+#include <string>
+#include <vector>
 using namespace std;
 
 int main() {
-    int mat1[MAXSIZE][MAXSIZE];
-    int N, M, k;
-    cin >> N >> M;
-    for (int i=0;i<N;i++)
+    vector<char> newWord;
+    string word;
+    getline(cin,word);
+    for (auto character = word.begin();character != word.end();character++)
     {
-        for (int j=0;j<M;j++)
+        if (isupper(*character))
         {
-            cin >> mat1[i][j];
+            newWord.push_back(tolower(*character));
+        }
+        else
+        {
+            newWord.push_back(toupper(*character));
         }
     }
-    for (int i=0;i<N;i++)
+
+    for (auto character = newWord.begin();character != newWord.end();character++)
     {
-        for (int j=0;j<M;j++)
-        {
-            cin >> k;
-            mat1[i][j] += k;
-        }
+        printf("%c", *character);
     }
-    for (int i=0;i<N;i++)
-    {
-        for (int j=0;j<M;j++)
-        {
-            cout << mat1[i][j] << ' ';
-        }
-        cout << endl;
-    }
+    printf("\n");
     return 0;
 }
