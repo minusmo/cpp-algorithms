@@ -1,13 +1,12 @@
 #include <iostream>
 #include <vector>
 #include <utility>
-#include <queue>
 #define MAXSIZE 50
 #define MAXPOS 2500
 using namespace std;
 
 int calculateWorms(const int M, const int N, const int K,int map[MAXSIZE][MAXSIZE]);
-void bfs(int visited[MAXSIZE][MAXSIZE], const int r, const int c, const int M, const int N, int map[MAXSIZE][MAXSIZE]);
+void dfs(int visited[MAXSIZE][MAXSIZE], const int r, const int c, const int M, const int N, int map[MAXSIZE][MAXSIZE]);
 int main() 
 {
     int T;
@@ -44,7 +43,7 @@ int calculateWorms(const int M, const int N, const int K, int map[MAXSIZE][MAXSI
 {
     int r, c;
     int worms = 0;
-    int visited[N][M];
+    int visited[MAXSIZE][MAXSIZE];
     for (r=0;r<N;r++)
     {
         for (c=0;c<M;c++)
@@ -58,29 +57,7 @@ int calculateWorms(const int M, const int N, const int K, int map[MAXSIZE][MAXSI
         {
             if (map[r][c] == 1 && visited[r][c] == 0)
             {
-                vector<pair<int,int> > moves = {{-1,0},{0,1},{1,0},{0,-1}};
-                queue<pair<int,int> > q;
-                q.push({r,c});
-                while (!q.empty())
-                {
-                    auto spot = q.front();
-                    q.pop();
-                    visited[spot.first][spot.second] = 1;
-                    for (auto move : moves)
-                    {
-                        int newr = spot.first + move.first;
-                        int newc = spot.second + move.second;
-                        if (newr >= N || newc >= M || newr < 0 || newc < 0)
-                        {
-                            continue;
-                        }
-                        else if (map[newr][newc] == 1 && visited[newr][newc] == 0)
-                        {
-                            q.push({newr,newc});
-                        }
-                    }
-                        
-                }
+                dfs(visited,r,c,M,N,map);
                 worms += 1;
             }
             
@@ -89,30 +66,21 @@ int calculateWorms(const int M, const int N, const int K, int map[MAXSIZE][MAXSI
     return worms;
 }
 
-void bfs(int visited[MAXSIZE][MAXSIZE], const int r, const int c, const int M, const int N, int map[MAXSIZE][MAXSIZE])
+void dfs(int visited[MAXSIZE][MAXSIZE], const int r, const int c, const int M, const int N, int map[MAXSIZE][MAXSIZE])
 {
+    visited[r][c] = 1;
     vector<pair<int,int> > moves = {{-1,0},{0,1},{1,0},{0,-1}};
-    queue<pair<int,int> > q;
-    q.push({r,c});
-    while (!q.empty())
+    for (auto move : moves)
     {
-        auto spot = q.front();
-        q.pop();
-        visited[spot.first][spot.second] = 1;
-        for (auto move : moves)
+        int nextr = r + move.first;
+        int nextc = c + move.second;
+        if (nextr >= N || nextc >= M || nextr < 0 || nextc < 0)
         {
-            int newr = spot.first + move.first;
-            int newc = spot.second + move.second;
-            if (newr >= N || newc >= M || newr < 0 || newc < 0)
-            {
-                continue;
-            }
-            else if (map[newr][newc] == 1 && visited[newr][newc] == 0)
-            {
-                q.push({newr,newc});
-            }
+            continue;
         }
-            
+        else if (map[nextr][nextc] == 1 && visited[nextr][nextc] == 0)
+        {
+            dfs(visited, nextr,nextc, M,N,map);
+        }
     }
-    
 }
