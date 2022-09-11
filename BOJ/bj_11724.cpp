@@ -1,11 +1,11 @@
 #include <iostream>
 #include <vector>
-#include <queue>
 #define MAXNODES 1000
 #define MAXEDGES 500000
 using namespace std;
 
 int getConnectedComponents(vector<int> adjlist[MAXNODES+1], int N, int M);
+void dfs(vector<int> adjlist[MAXNODES+1], bool isVisited[MAXNODES+1], int currentNode);
 int main() {
     int N,M,a,b;
     cin >> N >> M;
@@ -34,24 +34,21 @@ int getConnectedComponents(vector<int> adjlist[MAXNODES+1], int N, int M)
     {
         if (isVisited[j] == false)
         {
-            queue<int> q;
-            q.push(j);
-            while (!q.empty())
-            {
-                int node = q.front();
-                q.pop();
-                isVisited[node] = true;
-                for (auto adjnode : adjlist[node])
-                {
-                    if (isVisited[adjnode] == false)
-                    {
-                        q.push(adjnode);
-                    }
-                }
-                
-            }
+            dfs(adjlist, isVisited, j);
             connectedComponents += 1;
         }
     }
     return connectedComponents;
+}
+
+void dfs(vector<int> adjlist[MAXNODES+1], bool isVisited[MAXNODES+1], int currentNode)
+{
+    isVisited[currentNode] = true;
+    for (auto adjnode : adjlist[currentNode])
+    {
+        if (isVisited[adjnode] == false)
+        {
+            dfs(adjlist, isVisited, adjnode);
+        }
+    }
 }
